@@ -733,13 +733,15 @@ document.getElementById('deadlineInput').addEventListener('change', e=>{
 // ---------- TABS ----------
 function renderTabs(){
   const leads = state.leads;
-  const dueCount = leads.filter(isDueOrOverdue).length;
+  const isContactedTab = l => l.status==='DM Sent'||l.status==='Called';
+  const uncontacted = leads.filter(l=>!isContactedTab(l));
+  const dueCount = uncontacted.filter(isDueOrOverdue).length;
   const tabsDef = [
-    {key:'all', label:'All', count: leads.length},
+    {key:'all', label:'All', count: uncontacted.length},
     {key:'due', label:'Due / Overdue', count: dueCount},
-    {key:'1', label:'Bucket 1', count: leads.filter(l=>l.bucket=='1').length},
-    {key:'2', label:'Bucket 2', count: leads.filter(l=>l.bucket=='2').length},
-    {key:'3', label:'Bucket 3', count: leads.filter(l=>l.bucket=='3').length},
+    {key:'1', label:'Bucket 1', count: uncontacted.filter(l=>l.bucket=='1').length},
+    {key:'2', label:'Bucket 2', count: uncontacted.filter(l=>l.bucket=='2').length},
+    {key:'3', label:'Bucket 3', count: uncontacted.filter(l=>l.bucket=='3').length},
     {key:'won', label:'Won', count: leads.filter(l=>l.status==='Closed – won').length},
     {key:'contacted', label:'Contacted', count: leads.filter(l=>l.status==='DM Sent'||l.status==='Called').length},
   ];
